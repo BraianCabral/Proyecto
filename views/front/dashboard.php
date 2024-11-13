@@ -13,7 +13,9 @@ if (!isset($_SESSION['username'])) {
       //Si no sos admin te llevo al login    
       header("Location: ../../index.php");
       exit;
-  }
+  } elseif ($rol_id == 1) {
+    header("Location: dashboard_admin.php");
+    }
 }
 
 $id = $_SESSION['id'];

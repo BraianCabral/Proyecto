@@ -23,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     if ($result_2->num_rows > 0) {
-        echo "<div class='alert alert-dark mt-3'>email ya existente en la base de datos</div>";
+        echo "<div class='alert alert-dark mt-3'>Email ya existente en la base de datos</div>";
         exit;
     }
 
     $sql = "INSERT INTO usuarios (nombre,email, contraseña,rol_id) VALUES ('$username', '$email', '$password','$rol')";
 
     if ($conn->query($sql) === TRUE) {
-        header("Location: ../views/front/noticias.php");
+        header("Location: ../views/front/login.php");
     } else {
         echo "<div class='alert alert-dark mt-3'>Error: " . $conn->error . "</div>";
     }

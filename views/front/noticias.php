@@ -3,7 +3,19 @@
 include '../../models/conexion.php';
 session_start();
 
-$sql = "SELECT * FROM noticias";
+$sql = "SELECT titulo,nombre,texto,imagen_link,noticias.id FROM `noticias` INNER JOIN categorias ON noticias.categoria_id = categorias.id";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $search = $_POST['search'];
+    //convierto lo que leo en minusculas
+    $search = strtolower($search);
+    //$sql = "SELECT * FROM noticias WHERE LOWER(titulo) LIKE '%$search%' ";SELECT * FROM noticias LEFT JOIN categorias ON noticias.categoria_id = categorias.id  WHERE LOWER(titulo) LIKE '%$search% 
+    $sql = " SELECT * FROM noticias INNER JOIN categorias ON noticias.categoria_id = categorias.id
+     WHERE LOWER(noticias.titulo) LIKE '%$search%' 
+     OR 
+            LOWER(categorias.nombre) LIKE '%$search%'
+      ";
+}
+
 $result = $conn->query($sql);
 
 ?>
@@ -55,6 +67,10 @@ if ($_SESSION)
       </li>
       </li>
     </ul>
+    <form method="POST" action="noticias.php" class="d-flex">
+      <input name="search" class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search">
+      <button class="btn btn-outline-light me-2" type="submit">Buscar</button>
+    </form>
     <a href="../../controllers/logout.php" class="btn btn-light">Cerrar Sesión</a>
   </div>
 </div>
@@ -76,8 +92,8 @@ else
           Categorias
         </a>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="../../views/front/noticias.php">Noticias</a></li>
-          <li><a class="dropdown-item" href="../../views/front/servicios.php">Servicios</a></li>
+          <li><a class="dropdown-item" href="noticias.php">Noticias</a></li>
+          <li><a class="dropdown-item" href="servicios.php">Servicios</a></li>
         </ul>
       <li class="nav-item">
         <a class="nav-link" href="../../views/front/contacto.php">Contacto</a>
@@ -103,13 +119,13 @@ else
             else {
                 while ($noticia = $result->fetch_assoc()) {
                     echo "
-                    <div class=\"col-sm-12 col-md-4 p-4\">
+                    <div class=\"col-sm-12 col-md-4 p-4 text-center\">
                         <div class=\"card border border-0 bg-dark bg-opacity-50\" style=\"width: 18rem;\">
                             <img src=\"{$noticia['imagen_link']}\" class=\"card-img-top\" alt=\"...\">
                                 <div class=\"card-body\">
                                     <h5 class=\"card-title\">{$noticia['titulo']}</h5>
                                     <p class=\"card-text\">{$noticia['texto']}</p>
-                                    <a href=\"#\" class=\"btn btn-outline-light\">Leer más...</a>
+                                    <a href=\"noticia_vista.php?id={$noticia['id']}\" class=\"btn btn-outline-light\">Leer Mas</a>
                                 </div>
                         </div>
                     </div>";
